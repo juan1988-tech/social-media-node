@@ -1,1 +1,3 @@
-console.log('me sirvo con node')
+const { connection } = require('./database/connection')
+
+connection()
