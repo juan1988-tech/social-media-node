@@ -29,6 +29,15 @@ app.get('/ruta-de-prueba',function(req,res){
     })
 })
 
+//cargar rutas
+const userRoute = require('./routes/users');
+const publicationRoute = require('./routes/publication');
+const followRoute = require('./routes/follow')
+
+app.use('/api', userRoute);
+app.use('/api', publicationRoute);
+app.use('/api', followRoute);
+
 //prueba de usuario
 app.get('/usuario',function(req,res){
 
