@@ -34,9 +34,9 @@ const userRoute = require('./routes/users');
 const publicationRoute = require('./routes/publication');
 const followRoute = require('./routes/follow')
 
-app.use('/api', userRoute);
-app.use('/api', publicationRoute);
-app.use('/api', followRoute);
+app.use('/api/user', userRoute);
+app.use('/api/publication', publicationRoute);
+app.use('/api/follow', followRoute);
 
 //prueba de usuario
 app.get('/usuario',function(req,res){

@@ -4,4 +4,10 @@ const pruebaUser = (req,res) =>{
     })
 }
 
-module.exports = { pruebaUser } 
+const register = (req,res)=>{
+    return res.status(200).json({
+        messasge: "Acción de registro de usuarios",
+    })
+}
+
+module.exports = { pruebaUser, register } 
