@@ -1,5 +1,6 @@
 //Importar usuarios y modulos
 const User = require('../models/user')
+const bcrypt = require('bcrypt');
 
 const pruebaUser = (req,res) =>{
     return res.status(200).send({
@@ -13,38 +14,53 @@ const register = (req,res)=>{
 
     //Comprobar que los datos que me lleguen bien
     if(!params.name || !params.email || !params.nick ){
-        console.log('petición invalida')
         return res.status(400).json({
             status: "error",
             messasge: "Faltan datos por enviar",
         })
     }
-    let userSaved = new User(params);
-
+    
     //Control de usuarios duplicados
     User.find({ $or:[
-        {email: userSaved.email.toLowerCase()},
-        {nick: userSaved.nick.toLowerCase()}
+        { email: params.email.toLowerCase() },
+        { nick: params.nick.toLowerCase() }
     ]}).exec().then(
-        (error)=>{
-            if(!userSaved){
+        async (users)=>{
+            if(!users){
                 res.status(500).json({
+                    status: "Error",
                     message: "Error en la consulta de usuarios"
                 })
             }
-            if(userSaved && userSaved.length >=1){
+            if(users && users.length >=1){
                 return res.status(200).send({
                     status: "success",
                     message: "El usuario ya existe"
                 })
             }
-              //Crear el objeto que guarda el usuario
-            return res.status(200).json({
-                messasge: "Acción de registro de usuarios",
-                userSaved
-            })  
-        }
-    )
+
+            //cifrar la contraseña
+            let pwd = await bcrypt.hash(params.password,10);
+            params.password = pwd;
+
+            let userSaved = new User(params);
+
+            //crear el objeto del usuario
+
+            userSaved.save()
+            .then((userStored)=>{
+                    if(!userStored){
+                        return res.status(500).send({
+                            status: "error",
+                            message:"error al guardar el usuario"
+                        })}
+                        
+                        return res.status(200).json({
+                            messasge: "Usuario registrado correctamente",
+                            user: userStored
+                            })            
+                        })
+        })
 }
 
 module.exports = { pruebaUser, register } 
