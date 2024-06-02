@@ -64,11 +64,35 @@ const register = (req,res)=>{
     }
 
 const login = (req,res) =>{
+    //recoger los datos del usuario
+    let params = req.body;
 
-    return res.status(200).json({
-        status: "success",
-        message: "acción de login"
-    })
+
+    //buscar en la base de datos si el usuario existe
+    if(!params.email || !params.password){
+        return res.status(404).send({
+            status: "error",
+            message: "Faltan datos por enviar"
+        })
+    }
+
+    User.findOne({email: params.email})
+    .select({"password": 0})
+    .then((user)=>{
+            if(!user){
+                return res.status(404).send({
+                    status: "error",
+                    message: "No existe el usaurio"
+                })
+            }
+
+            return res.status(200).json({
+                status: "success",
+                message: "acción de login",
+                user
+            })
+        }
+    ) 
 }
 
 module.exports = { pruebaUser, register, login } 
