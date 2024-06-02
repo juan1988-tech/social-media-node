@@ -61,6 +61,14 @@ const register = (req,res)=>{
                             })            
                         })
         })
+    }
+
+const login = (req,res) =>{
+
+    return res.status(200).json({
+        status: "success",
+        message: "acción de login"
+    })
 }
 
-module.exports = { pruebaUser, register } 
+module.exports = { pruebaUser, register, login } 
