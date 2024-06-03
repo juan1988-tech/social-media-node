@@ -77,19 +77,35 @@ const login = (req,res) =>{
     }
 
     User.findOne({email: params.email})
-    .select({"password": 0})
+    //.select({"password": 0})
     .then((user)=>{
             if(!user){
                 return res.status(404).send({
                     status: "error",
                     message: "No existe el usaurio"
                 })
+            }   
+
+            let pwd = bcrypt.compareSync(params.password, user.password)
+         
+            if(!pwd){
+                return res.status(400).send({
+                    status: "error",
+                    message: "No te has identificado correctamente"
+                })
             }
+
+            const token = false;
 
             return res.status(200).json({
                 status: "success",
                 message: "acción de login",
-                user
+                user:{
+                    id: user._id,
+                    name: user.name,
+                    nick: user.nick,
+                },
+                token
             })
         }
     ) 
