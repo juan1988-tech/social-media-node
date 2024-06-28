@@ -144,4 +144,12 @@ const profile = (req,res) =>{
     })
 }
 
-module.exports = { pruebaUser, register, login, profile } 
+const list = (req,res) =>{
+
+    return res.status(200).send({
+        status:"success",
+        message:"lista de usuarios"
+    })
+}
+
+module.exports = { pruebaUser, register, login, profile, list } 
