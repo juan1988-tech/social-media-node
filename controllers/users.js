@@ -121,4 +121,27 @@ const login = (req,res) =>{
     ) 
 }
 
-module.exports = { pruebaUser, register, login } 
+const profile = (req,res) =>{
+    //recibir los datos del parametro por la url
+    const userid = req.params.iduser;
+
+    //retorna la información el usuario a partir del id
+    User.findById(userid)
+    .select({password: 0, role: 0})
+    .then((user)=>{
+        if(!user){
+            return res.status(400).send({
+                status:"failed",
+                message: "El usuario no existe"
+            })
+        }
+
+        return res.status(200).send({
+            status:"success",
+            message:"log in user",
+            logeduser: user
+        })
+    })
+}
+
+module.exports = { pruebaUser, register, login, profile } 
