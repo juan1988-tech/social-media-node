@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('../services/jwt');
 const jsonwebtoken = require('jwt-simple');
 const { secret } = require('../services/jwt');
+const mongoosePaginate = require('mongoose-pagination');
 
 const pruebaUser = async (req,res) =>{        
     
@@ -144,12 +145,40 @@ const profile = (req,res) =>{
     })
 }
 
-const list = (req,res) =>{
+const list = async (req,res) =>{
+    let page = 1;
+    if(req.params.page){
+        page = req.params.page;
+    }
+    page = parseInt(page);
 
-    return res.status(200).send({
-        status:"success",
-        message:"lista de usuarios"
-    })
+    //hacer una consulta del número de páginas
+    const itemsPerPage = 5;
+
+    await User.find().paginate(page,itemsPerPage).exec().then((users)=>{
+
+        let orderedUsers = users.sort((a,b)=>{
+            let x = a.name;
+            let y = b.name;
+            if( x < y ){ return -1};
+            if( x > y ){ return 1 };
+            return 0
+        })
+
+        if(orderedUsers.length===0){
+            return res.status(200).send({
+                status:"success",
+                message:"no hay más usuarios"
+            })
+        }   
+
+        return res.status(200).send({
+            status:"success",
+            message:"lista de usuarios",
+            page,
+            users: orderedUsers
+        })
+    })    
 }
 
 module.exports = { pruebaUser, register, login, profile, list } 
