@@ -1,0 +1,50 @@
+{
+    "messasge": "mensaje enviado desde el archivo user.js",
+    "identifiedUser": {
+        "_id": "665e06158e1fef2b05467d85",
+        "name": "Chester Romeo",
+        "surname": "Franco",
+        "nick": "Chesters",
+        "email": "maofran48@gmail.com",
+        "password": "$2b$10$uJIP6WtxsrsjCUZ9hNhYyeR8Z/hHhvvomffG5y9Y7jOFeEklldAAG",
+        "role": "role_user",
+        "image": "delafult.png",
+        "created_at": "2024-06-03T18:06:13.120Z",
+        "__v": 0
+    },
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjY2NWUwNjE1OGUxZmVmMmIwNTQ2N2Q4NSIsIm5hbWUiOiJDaGVzdGVyIFJvbWVvIiwic3VybmFtZSI6IkZyYW5jbyIsIm5pY2siOiJDaGVzdGVycyIsImVtYWlsIjoibWFvZnJhbjQ4QGdtYWlsLmNvbSIsInJvbGUiOiJyb2xlX3VzZXIiLCJpbWFnZSI6ImRlbGFmdWx0LnBuZyIsImlhdCI6MTcxOTU0NTg0Mn0.13LmwShsFW8s8bqp3m8IBDQKrrhjaXDDHGZPBncj_L0"
+},
+{
+    "messasge": "mensaje enviado desde el archivo user.js",
+    "identifiedUser": {
+        "_id": "665e06528e1fef2b05467d88",
+        "name": "Juan David",
+        "surname": "Franco",
+        "nick": "Juancho",
+        "email": "jfrancoh5@gmail.com",
+        "password": "$2b$10$NxHkogNgV9vGn15SOxAF8u2oSPjG8BStS9rXCbYRqNzGnyUfiTWA6",
+        "role": "role_user",
+        "image": "delafult.png",
+        "created_at": "2024-06-03T18:07:14.229Z",
+        "__v": 0
+    },
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjY2NWUwNjUyOGUxZmVmMmIwNTQ2N2Q4OCIsIm5hbWUiOiJKdWFuIERhdmlkIiwic3VybmFtZSI6IkZyYW5jbyIsIm5pY2siOiJKdWFuY2hvIiwiZW1haWwiOiJqZnJhbmNvaDVAZ21haWwuY29tIiwicm9sZSI6InJvbGVfdXNlciIsImltYWdlIjoiZGVsYWZ1bHQucG5nIiwiaWF0IjoxNzE5NTQ2MjA4fQ.VnYqR_Ae35CLF66bsc_J-bf0-NPBoaDYHBHQdIUDEPc"
+},
+{
+    "messasge": "mensaje enviado desde el archivo user.js",
+    "identifiedUser": {
+        "_id": "665e06d28e1fef2b05467d8e",
+        "name": "Rodrigo",
+        "surname": "Cruz",
+        "nick": "Rodrigo",
+        "email": "rcruz@gmail.com",
+        "password": "$2b$10$Av/iFPrqO8sSmR8/5jTD5.CEsrv3NnVbjEJkEPBUKiVlUjl6dRmma",
+        "role": "role_user",
+        "image": "delafult.png",
+        "created_at": "2024-06-03T18:09:22.825Z",
+        "__v": 0
+    },
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjY2NWUwNmQyOGUxZmVmMmIwNTQ2N2Q4ZSIsIm5hbWUiOiJSb2RyaWdvIiwic3VybmFtZSI6IkNydXoiLCJuaWNrIjoiUm9kcmlnbyIsImVtYWlsIjoicmNydXpAZ21haWwuY29tIiwicm9sZSI6InJvbGVfdXNlciIsImltYWdlIjoiZGVsYWZ1bHQucG5nIiwiaWF0IjoxNzE5NTQ2MzgyfQ.quq82abLqopltD-sYCRk8vmXymu9C68cn_q09QIFwjM"
+}
+
+

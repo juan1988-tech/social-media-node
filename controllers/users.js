@@ -2,12 +2,21 @@
 const User = require('../models/user')
 const bcrypt = require('bcrypt');
 const jwt = require('../services/jwt');
+const jsonwebtoken = require('jwt-simple');
+const { secret } = require('../services/jwt');
 
-const pruebaUser = (req,res) =>{
-    return res.status(200).send({
-        messasge: "mensaje enviado desde el archivo user.js"
-    })
-}
+const pruebaUser = async (req,res) =>{        
+    
+        //decodificar el usuario
+        let userToDecode = req.headers.authorization.replace(/["']+/g,'');
+        let decodedUser = jsonwebtoken.decode(userToDecode,secret);
+        
+        return res.status(200).json({
+            messasge: "mensaje enviado desde el archivo user.js",
+            user: decodedUser
+        })
+} 
+
 
 const register = (req,res)=>{
     //recoger los parametros que nos llegan por la peticion
