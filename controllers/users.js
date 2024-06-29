@@ -5,6 +5,7 @@ const jwt = require('../services/jwt');
 const jsonwebtoken = require('jwt-simple');
 const { secret } = require('../services/jwt');
 const mongoosePaginate = require('mongoose-pagination');
+const user = require('../models/user');
 
 const pruebaUser = async (req,res) =>{        
     
@@ -155,8 +156,11 @@ const list = async (req,res) =>{
     //hacer una consulta del número de páginas
     const itemsPerPage = 5;
 
-    await User.find().paginate(page,itemsPerPage).exec().then((users)=>{
+    const totalUsers = await User.find()
 
+    const totalPages = Math.ceil(totalUsers.length/itemsPerPage)
+
+    await User.find().paginate(page,itemsPerPage).exec().then((users)=>{
         let orderedUsers = users.sort((a,b)=>{
             let x = a.name;
             let y = b.name;
@@ -168,15 +172,18 @@ const list = async (req,res) =>{
         if(orderedUsers.length===0){
             return res.status(200).send({
                 status:"success",
-                message:"no hay más usuarios"
+                message:"no hay más usuarios",
+                page,
+                userslist: orderedUsers,
+                totalPages
             })
         }   
-
+        
         return res.status(200).send({
             status:"success",
             message:"lista de usuarios",
             page,
-            users: orderedUsers
+            userslist: orderedUsers
         })
     })    
 }
