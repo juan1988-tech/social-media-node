@@ -188,4 +188,48 @@ const list = async (req,res) =>{
     })    
 }
 
-module.exports = { pruebaUser, register, login, profile, list } 
+const update = (req,res) =>{
+    //requerir la información del usuario
+    const userUpdater = req.body;
+    //requerir el token de autorizacion y ver el usuario asociado
+    const tokenUser = req.headers.authorization.replace(/["']+/g,'');
+    const userToUpdate = jsonwebtoken.decode(tokenUser,secret);
+
+    //buscar al usuario por su correo o por su nickname
+    User.find({$or:[
+        { email: userToUpdate.email.toLowerCase() },
+        { nick: userToUpdate.nick.toLowerCase() }
+    ]})
+    .exec()
+    .then(async (user)=>{
+        if(!user){
+            return res.status(400).json({
+                status:"failed",
+                message: "el usuario no existe"
+            })
+        }
+        //si la identidad del usuario ingresado es igual a la identidad del usuario token actualiza
+        const userId = userToUpdate.id;
+
+         //cifrar la contraseña
+         if(userUpdater.password){
+            let pwd = await bcrypt.hash(userUpdater.password,10);
+            userUpdater.password = pwd;
+         }
+         
+        if(userUpdater){
+            await User.findByIdAndUpdate(userId,userUpdater,{ new: true})
+            .then((userUpdated)=>{
+                return res.status(200).json({
+                    status: "success",
+                    message: "succesfully user updated",
+                    userUpdated,
+                    userToUpdate
+                })
+            })
+        }
+    })
+}
+
+
+module.exports = { pruebaUser, register, login, profile, list, update } 

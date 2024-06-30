@@ -9,5 +9,6 @@ router.post('/register',userController.register)
 router.post('/login',userController.login)
 router.get('/profile/:iduser',auth.auth,userController.profile);
 router.get('/list/:page?',userController.list)
+router.put('/update',auth.auth,userController.update)
 
 module.exports = router;
