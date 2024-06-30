@@ -209,27 +209,45 @@ const update = (req,res) =>{
             })
         }
         //si la identidad del usuario ingresado es igual a la identidad del usuario token actualiza
-        const userId = userToUpdate.id;
+        try{
+            const userId = userToUpdate.id;
 
-         //cifrar la contraseña
-         if(userUpdater.password){
+            //cifrar la contraseña
+            if(userUpdater.password){
             let pwd = await bcrypt.hash(userUpdater.password,10);
             userUpdater.password = pwd;
-         }
-         
-        if(userUpdater){
-            await User.findByIdAndUpdate(userId,userUpdater,{ new: true})
-            .then((userUpdated)=>{
-                return res.status(200).json({
-                    status: "success",
-                    message: "succesfully user updated",
-                    userUpdated,
-                    userToUpdate
+            }
+
+            if(userUpdater){
+                await User.findByIdAndUpdate(userId,userUpdater,{ new: true})
+                .then((userUpdated)=>{
+                    return res.status(200).json({
+                        status: "success",
+                        message: "succesfully user updated",
+                        userUpdated,
+                        userToUpdate
+                    })
                 })
+            }
+        }catch(err){
+            return res.status(500).send({
+                status:"failed",
+                message:" no existe el usuario"
             })
         }
     })
 }
 
+const upload = (req,res) =>{
+    const userToken = req.headers.authorization.replace(/["']+/g,'');
+    const identifiedUser = jsonwebtoken.decode(userToken,secret)
 
-module.exports = { pruebaUser, register, login, profile, list, update } 
+    return res.status(200).json({
+        status:"success",
+        message:"archivo subido",
+        user: identifiedUser,
+        file: req.file
+    })
+}
+
+module.exports = { pruebaUser, register, login, profile, list, update, upload } 
