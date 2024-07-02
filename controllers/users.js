@@ -239,9 +239,10 @@ const update = (req,res) =>{
     })
 }
 
-const upload = (req,res) =>{
+const upload = async (req,res) =>{
     const userToken = req.headers.authorization.replace(/["']+/g,'');
-    const identifiedUser = jsonwebtoken.decode(userToken,secret)
+    const identifiedUser = jsonwebtoken.decode(userToken,secret);
+
     if(!req.file){
         return res.status(400).json({
             status:"failed",
@@ -251,35 +252,28 @@ const upload = (req,res) =>{
 
     //sacar el nombre del archivo
     let filename = req.file.originalname;
-
+    
     //sacar la extensión de imagen
     let imageSplit = filename.split('\.');
     let imageExtention = imageSplit[1]
-
-    if(imageExtention !="png" || imageExtention != "jpg" || imageExtention != "jpeg"){
-        //capta el nombre del archivo en caso que no coincida    
-        const filePath = req.file.path;
-        
-        //desvincular el archivo
-        const fileDeleted = fs.unlinkSync(filePath);
-        
-        //devuelve la respuesta
-        return res.status(400).send({
-            status:"failed",
-            message: `Extención invalida ${imageExtention}` 
-        })
-    }
-
-    return res.status(200).json({
-        status:"success",
-        message:"archivo subido",
-        user: identifiedUser,
-        file: req.file,
-        filename
+    
+    await User.findOneAndUpdate({_id: identifiedUser.id},{image: req.file.filename},{ new: true })
+    .then((userUpdated)=>{
+            if(imageExtention ==="png" || imageExtention === "jpg" || imageExtention === "jpeg"){    
+                return res.status(200).json({
+                    status:"success",
+                    message:"archivo subido",
+                    userUpdated,
+                    })
+            }else{
+                fs.unlink(req.file.path,(error)=>{
+                    return res.status(400).send({
+                        status:"failed",
+                        message:"Extención invalida",
+                    })
+                })
+            }
     })
 }
-
-    
-
 
 module.exports = { pruebaUser, register, login, profile, list, update, upload } 
