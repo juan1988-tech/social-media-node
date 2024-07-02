@@ -7,6 +7,7 @@ const { secret } = require('../services/jwt');
 const mongoosePaginate = require('mongoose-pagination');
 const user = require('../models/user');
 const fs = require('node:fs');
+const path = require('node:path')
 
 const pruebaUser = async (req,res) =>{        
     
@@ -276,4 +277,23 @@ const upload = async (req,res) =>{
     })
 }
 
-module.exports = { pruebaUser, register, login, profile, list, update, upload } 
+const avatar = (req,res) =>{
+    //sacar el parametro de la url
+    const file = req.params.file;
+
+    //montar el path real de la imagen
+    const filePath = `./uploads/avatars/${file}`;
+
+    fs.stat(filePath,(error,exists)=>{
+        if(!exists){
+            return res.status(400).send({
+                status: "failed",
+                message:"no existe el archivo"
+            })
+        }else{
+            return res.sendFile(path.resolve(filePath))
+        }
+    })
+}
+
+module.exports = { pruebaUser, register, login, profile, list, update, upload, avatar } 
