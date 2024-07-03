@@ -16,6 +16,8 @@ const save = (req,res) =>{
     //conseguir los datos por el body, ¿quien soy como usuario?
     const tokenUser = req.headers.authorization.replace(/["']+/g,'');
     const userFollower = jsonwebtoken.decode(tokenUser,secret);
+
+    // identidad del usuario a agregar
     const followedUser = req.params.idfollowed; 
      
     User.findById(followedUser)
@@ -46,4 +48,36 @@ const save = (req,res) =>{
     })
 }
 
-module.exports = { pruebaFollow, save } 
+const unfollow = (req,res) =>{
+    //identidad del usuario identificado
+    const tokenUser = req.headers.authorization.replace(/["']+/g,'');
+    const userFollower = jsonwebtoken.decode(tokenUser,secret);
+
+    //identidad del usuario a eliminar
+    const userUnfollowed = req.params.idfollowed;
+
+    //Hacer el seguimiento del follow a eliminar
+    Follow.findOneAndDelete({
+        user: userFollower.id,
+        followed: userUnfollowed
+    })
+    .exec()
+    .then(async (followDeleted)=>{
+        if(!followDeleted){ 
+            return res.status(400).send({
+                status:"failed",
+                message:"no existe el follow"
+            })
+        }
+        else{
+            
+            return res.status(200).send({
+                status:"success",
+                message:"dejas de seguir a usuario",
+                followDeleted   
+            })
+        }
+    })   
+}
+
+module.exports = { pruebaFollow, save, unfollow } 
