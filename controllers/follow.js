@@ -80,4 +80,20 @@ const unfollow = (req,res) =>{
     })   
 }
 
-module.exports = { pruebaFollow, save, unfollow } 
+//lista de usuarios que están siguiendo cualquier usuario
+const following = (req,res) =>{
+    return res.status(200).send({
+        status:"success",
+        message:"lista de usuarios seguidos"
+    })
+}
+
+//listado de usuarios que siguen al usuario identificado
+const followed = (req,res) =>{
+    return res.status(200).send({
+        status:"success",
+        message:"lista de usuarios que me siguen"
+    })
+}
+
+module.exports = { pruebaFollow, save, unfollow, following, followed } 
