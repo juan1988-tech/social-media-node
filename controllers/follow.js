@@ -3,6 +3,7 @@ const User = require('../models/user');
 const jsonwebtoken = require('jwt-simple');
 const { secret } = require('../services/jwt');
 const user = require('../models/user');
+const mongoosePagination = require('mongoose-pagination')
 
 
 const pruebaFollow = (req,res) =>{
@@ -81,12 +82,45 @@ const unfollow = (req,res) =>{
 }
 
 //lista de usuarios que están siguiendo cualquier usuario
-const following = (req,res) =>{
-    return res.status(200).send({
-        status:"success",
-        message:"lista de usuarios seguidos"
+const following = async (req,res) =>{
+    //sacar la ide de la url 
+    let userFollowerId = req.params.iduser;
+    
+    //verificar si el usuario existe
+    const query = User.where({_id: userFollowerId})
+    const identifiedUser = await query.findOne();
+
+    //Comprobar si me llega la página por parametro en la url
+    let page = 1;
+
+    //confugurar los usuarios por página
+    const itemsPerPage = 5;
+
+    if(req.params.page){
+        page = req.params.page
+    }
+
+    if(!identifiedUser){
+        return res.status(400).send({
+            status:"failed",
+            message:"el usuario no existe",        
+        })
+    }
+
+    //usar a pagination para extraer los follows asociados al usuario    
+    Follow
+    .find({user: identifiedUser._id})
+    .then((follows)=>{
+        return res.status(200).send({
+            status:"success",
+            message:"lista de usuarios seguidos",
+            identifiedUser,
+            page,
+            follows
+            })
     })
-}
+} 
+
 
 //listado de usuarios que siguen al usuario identificado
 const followed = (req,res) =>{
