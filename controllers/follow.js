@@ -106,17 +106,44 @@ const following = async (req,res) =>{
             message:"el usuario no existe",        
         })
     }
+    
+    let totalCounter; 
 
+    await Follow.where({user: identifiedUser._id}).countDocuments()
+    .then((total)=>{
+        totalCounter = total
+        totalCounter = Math.round(totalCounter/itemsPerPage);
+        return totalCounter
+    })
+    
     //usar a pagination para extraer los follows asociados al usuario    
-    Follow
+    await Follow
     .find({user: identifiedUser._id})
+    .populate("followed","-password -role -__v")
+    .paginate(page,itemsPerPage)
     .then((follows)=>{
+
+        if(page>totalCounter){
+            return res.status(200).send({
+                status: "succcess",
+                message:"no hay más folloes asociados"
+            })
+        }    
+
+        let orderedFollows = follows.sort((a,b)=>{
+            let x = a.surname;
+            let y = b.surname;
+            if( x < y ){ return -1};
+            if( x > y ){ return 1 };
+            return 0
+        })
+
         return res.status(200).send({
             status:"success",
             message:"lista de usuarios seguidos",
-            identifiedUser,
+            orderedFollows,
             page,
-            follows
+            totalCounter
             })
     })
 } 
