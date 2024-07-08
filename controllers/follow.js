@@ -4,6 +4,7 @@ const jsonwebtoken = require('jwt-simple');
 const { secret } = require('../services/jwt');
 const user = require('../models/user');
 const mongoosePagination = require('mongoose-pagination')
+const { followUsersIds } = require('../services/followUsersService');
 
 
 const pruebaFollow = (req,res) =>{
@@ -83,13 +84,13 @@ const unfollow = (req,res) =>{
 
 //lista de usuarios que están siguiendo cualquier usuario
 const following = async (req,res) =>{
-    //sacar la ide de la url 
+    //sacar la id de la url 
     let userFollowerId = req.params.iduser;
     
     //verificar si el usuario existe
     const query = User.where({_id: userFollowerId})
     const identifiedUser = await query.findOne();
-
+    
     //Comprobar si me llega la página por parametro en la url
     let page = 1;
 
@@ -107,6 +108,8 @@ const following = async (req,res) =>{
         })
     }
     
+    let totalfollowsIds = await followUsersIds(identifiedUser._id);
+    //sacar el total de las páginas
     let totalCounter; 
 
     await Follow.where({user: identifiedUser._id}).countDocuments()
@@ -130,6 +133,7 @@ const following = async (req,res) =>{
             })
         }    
 
+        //ordenar los follows por apellido
         let orderedFollows = follows.sort((a,b)=>{
             let x = a.surname;
             let y = b.surname;
@@ -143,7 +147,8 @@ const following = async (req,res) =>{
             message:"lista de usuarios seguidos",
             orderedFollows,
             page,
-            totalCounter
+            totalCounter,
+            totalfollowsIds
             })
     })
 } 
