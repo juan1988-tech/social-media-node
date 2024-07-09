@@ -8,6 +8,7 @@ const mongoosePaginate = require('mongoose-pagination');
 const user = require('../models/user');
 const fs = require('node:fs');
 const path = require('node:path')
+const { followThisUser } = require('../services/followUsersService');
 
 const pruebaUser = async (req,res) =>{        
     
@@ -125,14 +126,21 @@ const login = (req,res) =>{
     ) 
 }
 
-const profile = (req,res) =>{
+const profile = async (req,res) =>{
     //recibir los datos del parametro por la url
     const userid = req.params.iduser;
 
+    //retornar al asuario que está haciendo la verificacion
+    let userToDecode = req.headers.authorization.replace(/["']+/g,'');
+    let userReviewer = jsonwebtoken.decode(userToDecode,secret);
+    
     //retorna la información el usuario a partir del id
     User.findById(userid)
     .select({password: 0, role: 0})
-    .then((user)=>{
+    .then( async (user)=>{
+        
+        const followService = await followThisUser(userid,userReviewer.id)
+
         if(!user){
             return res.status(400).send({
                 status:"failed",
@@ -143,7 +151,8 @@ const profile = (req,res) =>{
         return res.status(200).send({
             status:"success",
             message:"log in user",
-            logeduser: user
+            viewedUser: user,
+            followService
         })
     })
 }
