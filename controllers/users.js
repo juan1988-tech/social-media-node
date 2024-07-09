@@ -184,9 +184,7 @@ const list = async (req,res) =>{
             return res.status(200).send({
                 status:"success",
                 message:"no hay más usuarios",
-                page,
-                userslist: orderedUsers,
-                totalPages
+                page
             })
         }   
         

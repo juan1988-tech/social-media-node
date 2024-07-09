@@ -8,7 +8,6 @@ router.get('/prueba-follower',followerController.pruebaFollow)
 router.post('/save/:idfollowed',auth.auth,followerController.save)
 router.delete('/unfollow/:idfollowed',auth.auth,followerController.unfollow)
 router.get('/following/:iduser?/:page?',auth.auth,followerController.following)
-router.get('/followed/:iduser?/:page?',auth.auth,followerController.followed)
-
+router.get('/followers/:iduser?/:page?',auth.auth,followerController.followers)
 
 module.exports = router;
