@@ -115,7 +115,7 @@ const following = async (req,res) =>{
     await Follow.where({user: identifiedUser._id}).countDocuments()
     .then((total)=>{
         totalCounter = total
-        totalCounter = Math.round(totalCounter/itemsPerPage);
+        totalCounter = Math.ceil(totalCounter/itemsPerPage);
         return totalCounter
     })
     
