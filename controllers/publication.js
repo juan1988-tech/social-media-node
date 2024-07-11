@@ -3,6 +3,8 @@ const jwt = require('jwt-simple')
 const { secret } = require('../services/jwt');
 const User = require('../models/user')
 const mongoosePagination = require('mongoose-pagination')
+const fs = require('node:fs')
+const path = require('node:path')
 
 const pruebaPublish = (req,res) =>{
     return res.status(200).send({
@@ -159,8 +161,7 @@ Publication.find({ user: identifiedUser.id})
 }
 
 const upload = async (req,res) =>{
-    const userToken = req.headers.authorization.replace(/["']+/g,'');
-    const identifiedUser = jwt.decode(userToken,secret);
+    const idPublication = req.params.idpublication; 
 
     if(!req.file){
         return res.status(400).json({
@@ -176,7 +177,7 @@ const upload = async (req,res) =>{
     let imageSplit = filename.split('\.');
     let imageExtention = imageSplit[1]
     
-    await Publication.findOneAndUpdate({user: identifiedUser.id},{image: req.file.filename},{ new: true })
+    await Publication.findOneAndUpdate({_id: idPublication},{image: req.file.filename},{ new: true })
     .then((publicationUpdated)=>{
             if(imageExtention ==="png" || imageExtention === "jpg" || imageExtention === "jpeg"){    
                 return res.status(200).json({
@@ -195,4 +196,23 @@ const upload = async (req,res) =>{
     })
 }
 
-module.exports = { pruebaPublish, save, onePublication, deletePublication, list, upload } 
+const avatar = (req,res) => {
+    //sacar el parametro de la url
+    const file = req.params.file;
+
+    //montar el path real de la imagen
+    const filePath = `./uploads/publications/${file}`;
+
+    fs.stat(filePath,(error,exists)=>{
+        if(!exists){
+            return res.status(400).send({
+                status: "failed",
+                message:"no existe el archivo"
+            })
+        }else{
+            return res.sendFile(path.resolve(filePath))
+        }
+    })
+}
+
+module.exports = { pruebaPublish, save, onePublication, deletePublication, list, upload, avatar } 

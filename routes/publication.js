@@ -23,6 +23,7 @@ router.post('/save-publication',auth.auth,publishController.save)
 router.get('/mostrar-publicacion/:idpublication',publishController.onePublication)
 router.delete('/borrar-publicacion/:idpublication',publishController.deletePublication)
 router.get('/lista-publicaciones/:iduser/:page?',auth.auth, publishController.list)
-router.post('/upload',[auth.auth,uploads.single("file0")], publishController.upload)
+router.post('/upload/:idpublication',[auth.auth,uploads.single("file0")], publishController.upload)
+router.get('/avatar/:file',publishController.avatar)
 
 module.exports = router;
