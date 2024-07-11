@@ -154,8 +154,45 @@ Publication.find({ user: identifiedUser.id})
         organizedFollows,
         page,
         totalPublications
+        })
     })
-})
 }
 
-module.exports = { pruebaPublish, save, onePublication, deletePublication, list } 
+const upload = async (req,res) =>{
+    const userToken = req.headers.authorization.replace(/["']+/g,'');
+    const identifiedUser = jwt.decode(userToken,secret);
+
+    if(!req.file){
+        return res.status(400).json({
+            status:"failed",
+            message:"La petición no incluye la imagen"
+        })
+    }
+
+    //sacar el nombre del archivo
+    let filename = req.file.originalname;
+    
+    //sacar la extensión de imagen
+    let imageSplit = filename.split('\.');
+    let imageExtention = imageSplit[1]
+    
+    await Publication.findOneAndUpdate({user: identifiedUser.id},{image: req.file.filename},{ new: true })
+    .then((publicationUpdated)=>{
+            if(imageExtention ==="png" || imageExtention === "jpg" || imageExtention === "jpeg"){    
+                return res.status(200).json({
+                    status:"success",
+                    message:"archivo subido",
+                    publicationUpdated,
+                    })
+            }else{
+                fs.unlink(req.file.path,(error)=>{
+                    return res.status(400).send({
+                        status:"failed",
+                        message:"Extención invalida",
+                    })
+                })
+            }
+    })
+}
+
+module.exports = { pruebaPublish, save, onePublication, deletePublication, list, upload } 
