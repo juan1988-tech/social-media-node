@@ -148,7 +148,6 @@ const following = async (req,res) =>{
             orderedFollows,
             page,
             totalCounter,
-            //totalfollowsIds
             })
     })
 } 

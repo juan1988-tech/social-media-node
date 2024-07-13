@@ -171,7 +171,9 @@ const list = async (req,res) =>{
 
     const totalPages = Math.ceil(totalUsers.length/itemsPerPage)
 
-    await User.find().paginate(page,itemsPerPage).exec().then((users)=>{
+    await User.find().paginate(page,itemsPerPage)
+    .select({ password: 0, role: 0, _id: 0, __v: 0, email: 0 })
+    .then((users)=>{
         let orderedUsers = users.sort((a,b)=>{
             let x = a.name;
             let y = b.name;
