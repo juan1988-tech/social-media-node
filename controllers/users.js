@@ -9,6 +9,7 @@ const user = require('../models/user');
 const fs = require('node:fs');
 const path = require('node:path')
 const { followThisUser } = require('../services/followUsersService');
+const { validate } = require('../helpers/validator')
 
 const pruebaUser = async (req,res) =>{        
     
@@ -26,6 +27,9 @@ const pruebaUser = async (req,res) =>{
 const register = (req,res)=>{
     //recoger los parametros que nos llegan por la peticion
     let params = req.body;
+
+    //usar la función validate
+    validate(params)
 
     //Comprobar que los datos que me lleguen bien
     if(!params.name || !params.email || !params.nick ){
