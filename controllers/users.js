@@ -29,7 +29,16 @@ const register = (req,res)=>{
     let params = req.body;
 
     //usar la función validate
-    validate(params)
+    try{
+        validate(params)
+    }catch(err){
+        return res.status(500).json({
+            status: "error",
+            messasge: "Faltan datos por enviar",
+            err:{}
+        })
+    }
+    
 
     //Comprobar que los datos que me lleguen bien
     if(!params.name || !params.email || !params.nick ){
