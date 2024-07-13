@@ -25,5 +25,6 @@ router.delete('/borrar-publicacion/:idpublication',publishController.deletePubli
 router.get('/lista-publicaciones/:iduser/:page?',auth.auth, publishController.list)
 router.post('/upload/:idpublication',[auth.auth,uploads.single("file0")], publishController.upload)
 router.get('/avatar/:file',publishController.avatar)
+router.get('/feed/:page?',auth.auth, publishController.feed)
 
 module.exports = router;

@@ -5,6 +5,7 @@ const User = require('../models/user')
 const mongoosePagination = require('mongoose-pagination')
 const fs = require('node:fs')
 const path = require('node:path')
+const { followUsersIds } = require('../services/followUsersService');
 
 const pruebaPublish = (req,res) =>{
     return res.status(200).send({
@@ -215,4 +216,79 @@ const avatar = (req,res) => {
     })
 }
 
-module.exports = { pruebaPublish, save, onePublication, deletePublication, list, upload, avatar } 
+const feed = async (req,res) =>{
+    //sacar la página actual
+    let page = 1;
+    if(req.params.page) page = req.params.page;
+    
+    //numero de items por página 
+    const itemsPerPage = 5;
+
+    //sacar la identidad del usuario registrado 
+    const userToken = req.headers.authorization.replace(/["']+/g,'');
+    const identifiedUser = jwt.decode(userToken,secret);
+
+    let totalPublications; 
+    await Publication.where({user: identifiedUser.id}).countDocuments()
+    .exec()
+    .then((total)=>{
+        totalPublications = total
+        totalPublications = Math.ceil(totalPublications/itemsPerPage)
+        return totalPublications
+    })
+
+    try{
+    //sacar un array en limpio de los usuarios que sigo como usuario identificado
+    let myFollows = (await followUsersIds(identifiedUser.id)).followingClean
+
+    if(myFollows.length === 0){
+        return res.status(400).json({
+            status:"success",
+            message:"Este usuario no tiene seguidores asociados"
+        })
+    }
+
+    //incluir las publicaiones de mis seguidores
+    let publicationsFollowers; 
+
+    //sacar el total de páginas
+    let totalPublications; 
+    Publication.where({user: identifiedUser.id}).countDocuments()
+    .exec()
+    .then((total)=>{
+        totalPublications = total
+        totalPublications = Math.ceil(totalPublications/itemsPerPage)
+        return totalPublications
+})
+    
+    await Publication.find({ user: myFollows})
+    .populate("user","-password -role -email -__v")
+    .paginate(page,itemsPerPage)
+    .then((data)=>{ 
+        publicationsFollowers = data;
+        return publicationsFollowers
+    })
+    
+    publicationsFollowers.sort((a,b)=>{
+        let x = a.created_at;
+        let y = b.created_at;
+        if( x < y ){ return -1};
+        if( x > y ){ return 1 };
+        return 0
+    })
+
+    return res.status(200).json({
+        status:"sucess",
+        message: "feed",
+        page,
+        totalPublications,
+        myFollows,
+        publicationsFollowers,
+    })
+    }catch(error){
+        return {}
+    }
+    
+}
+
+module.exports = { pruebaPublish, save, onePublication, deletePublication, list, upload, avatar, feed } 
